@@ -339,8 +339,12 @@ function Export-VMTagsToXlsx {
         $TagTable   = [ordered]@{TagEntity = $VMName}
         $Assigned = @{}
         $Categories | ForEach-Object {
-            if (-Not $Tags[$VMName]) { return }
-            $TagTable[$_] = $Tags[$VMName][$_]
+            if (-Not $Tags[$VMName]) {
+                $TagTable[$_] = $Null
+            } else {
+                $TagTable[$_] = $Tags[$VMName][$_]
+            }
+
         }
 
         New-Object -TypeName PSObject -Property $TagTable
@@ -351,7 +355,7 @@ function Export-VMTagsToXlsx {
 
     $ColumnNu = 1
 
-    $Tags.Keys | %{$Tags[$_].Keys}|Sort-Object -Unique | ForEach-Object {
+    $Categories | ForEach-Object {
         $Column = [System.Collections.ArrayList]@()
         # Add the heading which is the tag category
         $Column.Add($_) | Out-Null
